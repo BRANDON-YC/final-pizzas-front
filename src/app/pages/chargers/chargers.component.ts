@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MenuComponent } from '../../commons/menu/menu.component';
+import { environment } from '../../../environments/environment';
+
 
 // === MODELOS ===
 type Pizza = {
@@ -62,9 +64,10 @@ export class OrdersComponent {
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
 
-readonly ordersBaseUrl = 'https://perpetual-gentleness-production.up.railway.app/api/orders';
-readonly pizzasBaseUrl = 'https://perpetual-gentleness-production.up.railway.app/api/pizzas';
-readonly customersBaseUrl = 'https://perpetual-gentleness-production.up.railway.app/api/customers';
+readonly ordersBaseUrl = `${environment.apiUrl}/orders`;
+readonly pizzasBaseUrl = `${environment.apiUrl}/pizzas`;
+readonly customersBaseUrl = `${environment.apiUrl}/customers`;
+
 
 
   orders = signal<Order[]>([]);
@@ -302,3 +305,4 @@ readonly customersBaseUrl = 'https://perpetual-gentleness-production.up.railway.
 
   trackByOrder = (_: number, order: Order) => order.idOrder;
 }
+
