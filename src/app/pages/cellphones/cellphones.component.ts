@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MenuComponent } from '../../commons/menu/menu.component';
+import { environment } from '../../../environments/environment';
+
 
 type Pizza = {
   idPizza: number | null;
@@ -32,7 +34,7 @@ type Page<T> = {
 export class PizzasComponent {
   private readonly http = inject(HttpClient);
   private readonly fb = inject(FormBuilder);
-  private readonly baseUrl = 'https://perpetual-gentleness-production.up.railway.app/api/pizzas';
+  private readonly baseUrl = `${environment.apiUrl}/pizzas`;
 
 
   readonly isLoading = signal(false);
@@ -295,3 +297,4 @@ export class PizzasComponent {
     });
   }
 }
+
