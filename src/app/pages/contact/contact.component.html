@@ -1,0 +1,54 @@
+<app-menu></app-menu>
+
+<section class="contact">
+  <div class="contact__intro">
+    <h1>SOPORTE</h1>
+    <p>
+    </p>
+
+    <div class="info-cards">
+      <article>
+        <p>loschurros&#64;gmail.com</p>
+        <p>+591 64116272</p>
+      </article>
+      <article>
+        <h3>HORARIO</h3>
+        <p>Solo Feriados</p>
+        <p>12:00 a 13:00</p>
+      </article>
+    </div>
+  </div>
+
+  <div class="contact__form">
+    <h2>ENVIANOS UN MENSAJE</h2>
+    <form [formGroup]="contactForm" (ngSubmit)="submitForm()">
+      <label>
+        Nombre completo
+        <input type="text" formControlName="name"/>
+        @if (contactForm.controls.name.invalid && contactForm.controls.name.touched) {
+          <small>Este campo es obligatorio.</small>
+        }
+      </label>
+      <label>
+        Correo electrónico
+        <input type="email" formControlName="email"/>
+        @if (contactForm.controls.email.invalid && contactForm.controls.email.touched) {
+          <small>Ingresa un correo valido.</small>
+        }
+      </label>
+      <label>
+        Mensaje
+        <textarea rows="4" formControlName="message"></textarea>
+        @if (contactForm.controls.message.invalid && contactForm.controls.message.touched) {
+          <small>Describe tu solicitud (mínimo 10 caracteres).</small>
+        }
+      </label>
+
+      <button class="btn primary" type="submit">Enviar mensajes</button>
+
+      @if (submitted) {
+        <p class="success">Gracias, recibimos tu mensaje.</p>
+      }
+    </form>
+  </div>
+</section>

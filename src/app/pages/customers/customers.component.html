@@ -1,0 +1,37 @@
+<app-menu></app-menu>
+
+<section class="page">
+  <h1>CLIENTES</h1>
+  <p>
+    Consulta el endpoint
+    <code>/api/customers/phone/&lt;phone&gt;</code>
+    de tu backend.
+  </p>
+
+  <form class="search-form" [formGroup]="searchForm" (ngSubmit)="search()">
+    <label>
+      Teléfono
+      <input formControlName="phone" placeholder="Ejemplo: (688) 944-6619" />
+    </label>
+    <div class="buttons">
+      <button type="submit" [disabled]="isLoading()">Buscar</button>
+      <button type="button" (click)="clear()">Limpiar</button>
+    </div>
+  </form>
+
+  @if (feedback()) {
+    <p class="feedback">{{ feedback() }}</p>
+  }
+
+  @if (isLoading()) {
+    <p>Cargando...</p>
+  } @else if (customer()) {
+    <div class="card">
+      <h2>{{ customer()?.name }}</h2>
+      <p><strong>ID:</strong> {{ customer()?.idCustomer }}</p>
+      <p><strong>Email:</strong> {{ customer()?.email }}</p>
+      <p><strong>Teléfono:</strong> {{ customer()?.phoneNumber || '—' }}</p>
+      <p><strong>Dirección:</strong> {{ customer()?.address || '—' }}</p>
+    </div>
+  }
+</section>

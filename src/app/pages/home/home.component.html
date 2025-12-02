@@ -1,0 +1,26 @@
+<app-menu></app-menu>
+
+<section class="home">
+  <h1>Panel de gestión de <span>Los Churros</span></h1>
+
+  <p>
+    Desde aquí controlas lo que pasa en la pizzería: qué se vende, qué se está
+    preparando, quién pidió y quién quiere hacer un pedido especial.
+  </p>
+
+  <div class="links">
+    <a routerLink="/pizzas">Pizzas</a>
+    <a routerLink="/orders">Pedidos</a>
+    <a routerLink="/customers">Clientes</a>
+    <a routerLink="/contact">Contacto</a>
+  </div>
+
+  <h2>Funciones del panel</h2>
+  <ul>
+    @for (item of highlights; track item.title) {
+      <li>
+        <strong>{{ item.title }}:</strong> {{ item.description }}
+      </li>
+    }
+  </ul>
+</section>

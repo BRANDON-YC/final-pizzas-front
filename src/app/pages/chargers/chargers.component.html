@@ -1,0 +1,201 @@
+<app-menu></app-menu>
+
+<section class="page">
+  <h1>Pedidos</h1>
+  <p>
+    Gestión de pedidos contra
+    <code>http://localhost:8080/api/orders</code>.
+  </p>
+
+  <!-- 🔄 TOOLBAR: TODOS / HOY / FUERA DE HORARIO -->
+  <div class="toolbar">
+    <button
+      type="button"
+      (click)="loadAll()"
+      [disabled]="isLoading()"
+    >
+      Todos
+    </button>
+
+    <button
+      type="button"
+      (click)="loadToday()"
+      [disabled]="isLoading()"
+    >
+      Sólo hoy
+    </button>
+
+    <button
+      type="button"
+      (click)="loadOutside()"
+      [disabled]="isLoading()"
+    >
+      Fuera de horario
+    </button>
+  </div>
+
+  <!-- 🔹 FORMULARIO CREAR / EDITAR -->
+  <form class="card" [formGroup]="orderForm" (ngSubmit)="submit()">
+    <h2>
+      {{ editingId() === null ? 'Nuevo pedido' : 'Editar pedido #' + editingId() }}
+    </h2>
+
+    <div class="fields">
+<label>
+  Id cliente
+  <select formControlName="idCustomer">
+    <option value="">-- Selecciona cliente --</option>
+    <option *ngFor="let customer of customers()" [value]="customer.idCustomer">
+      {{ customer.idCustomer }} · {{ customer.name }} · {{ customer.phoneNumber || 'Sin teléfono' }}
+    </option>
+  </select>
+</label>
+
+      <label>
+        Fecha (opcional)
+        <input type="datetime-local" formControlName="date" />
+      </label>
+
+      <!-- 🔹 PIZZA -->
+      <select
+        formControlName="pizzaId"
+        (change)="onPizzaChange($event)"
+      >
+        <option [ngValue]="null">-- Selecciona una pizza --</option>
+        <option *ngFor="let pizza of pizzas()" [ngValue]="pizza.idPizza">
+          {{ pizza.name }} ·
+          {{ pizza.price | number: '1.2-2' }} Bs
+          ({{ pizza.vegetarian ? 'Vegetariana' : 'Normal' }})
+        </option>
+      </select>
+
+      <!-- 🔹 CANTIDAD -->
+      <label>
+        Cantidad
+        <input
+          type="number"
+          min="1"
+          formControlName="pizzaQuantity"
+          (input)="onQuantityOrPriceChange()"
+        />
+      </label>
+
+      <!-- 🔹 PRECIO UNITARIO -->
+      <label>
+        Precio unitario (Bs)
+        <input
+          type="number"
+          step="0.01"
+          formControlName="pizzaPrice"
+          (input)="onQuantityOrPriceChange()"
+        />
+      </label>
+
+      <!-- 🔹 TOTAL (CALCULADO) -->
+      <label>
+        Total (Bs)
+        <input
+          type="number"
+          formControlName="total"
+          step="0.01"
+          readonly
+        />
+      </label>
+
+      <!-- 🔹 MÉTODO -->
+      <label>
+        Método
+        <select formControlName="method">
+          <option value="">-- Selecciona método --</option>
+          <option value="D">Delivery</option>
+          <option value="C">Para llevar</option>
+          <option value="S">En el local</option>
+        </select>
+      </label>
+
+      <label>
+        Notas adicionales
+        <textarea formControlName="additionalNotes" rows="2"></textarea>
+      </label>
+    </div>
+
+    <div class="buttons">
+      <button
+        type="submit"
+        [disabled]="orderForm.invalid || isSubmitting()"
+      >
+        {{ editingId() === null ? 'Crear pedido' : 'Guardar cambios' }}
+      </button>
+
+      <button
+        type="button"
+        (click)="clearForm()"
+        [disabled]="isSubmitting()"
+      >
+        Limpiar
+      </button>
+    </div>
+  </form>
+
+  <!-- 💬 FEEDBACK -->
+  <p class="feedback" *ngIf="feedback()">
+    {{ feedback() }}
+  </p>
+
+  <!-- ⏳ ESTADO DE CARGA -->
+  <p *ngIf="isLoading()">
+    Cargando pedidos...
+  </p>
+
+  <!-- 📋 LISTA DE PEDIDOS -->
+  <ul
+    class="list"
+    *ngIf="!isLoading() && orders().length > 0"
+  >
+    <li *ngFor="let order of orders(); trackBy: trackByOrder">
+      <div class="row-main">
+        <span class="main-info">
+          Pedido #{{ order.idOrder }}
+          · Cliente: {{ order.idCustomer }}
+          · Tel: {{ customerPhones()[order.idCustomer] || '—' }}
+        </span>
+        <span class="extra">
+          Fecha: {{ order.date }} ·
+          Total: {{ order.total | number: '1.2-2' }} Bs ·
+          Método: {{ order.method }}
+        </span>
+        <span class="extra">
+          Notas:
+          {{ order.additionalNotes || '—' }}
+        </span>
+        <span class="extra">
+          Pizzas:
+          <ng-container *ngIf="order.items?.length; else noPizzas">
+            <ng-container *ngFor="let item of order.items; let last = last">
+              {{ item.quantity }}x
+              {{ item.pizza?.name || ('Pizza #' + item.idPizza) }}
+              <span *ngIf="item.pizza?.vegetarian">
+                (Vegetariana)
+              </span>{{ last ? '' : ', ' }}
+            </ng-container>
+          </ng-container>
+          <ng-template #noPizzas>—</ng-template>
+        </span>
+      </div>
+
+      <div class="row-actions">
+        <button type="button" (click)="edit(order)">
+          Editar
+        </button>
+        <button type="button" (click)="delete(order.idOrder)">
+          Eliminar
+        </button>
+      </div>
+    </li>
+  </ul>
+
+  <!-- 💤 SIN DATOS -->
+  <p *ngIf="!isLoading() && orders().length === 0">
+    No hay pedidos registrados.
+  </p>
+</section>
