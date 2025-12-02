@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MenuComponent } from '../../commons/menu/menu.component';
+import { environment } from '../../../environments/environment';
+
 
 type Customer = {
   idCustomer: string;
@@ -22,7 +24,7 @@ type Customer = {
 export class CustomersComponent {
   private readonly http = inject(HttpClient);
   private readonly fb = inject(FormBuilder);
-  private readonly baseUrl = 'https://perpetual-gentleness-production.up.railway.app/api/customers';
+  private readonly baseUrl = `${environment.apiUrl}/customers`;
 
 
   readonly searchForm = this.fb.nonNullable.group({
